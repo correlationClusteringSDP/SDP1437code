@@ -3,6 +3,7 @@
 install python cvxpy first 
 
 run create_triangles.py first and then sdp.py
+
 target is the approximate ratio we want to get,
 splitting point split the interval.
 
