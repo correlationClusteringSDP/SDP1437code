@@ -2,7 +2,7 @@ import cvxpy as cp
 import numpy as np
 import csv
 from collections import defaultdict
-from create_triangels import *
+from create_triangles import *
 
 def solve_sdp(triangles):
 	# n = 1002
@@ -110,11 +110,11 @@ def solve_sdp(triangles):
 	prob = cp.Problem(cp.Maximize(c.T @ x), constraints)
 
 	
-	# prob.solve()
+	prob.solve()
 	
 	# prob.solve(solver=cp.CVXOPT)
 	# prob.solve(solver=cp.SCS)
-	prob.solve(solver=cp.MOSEK)
+	# prob.solve(solver=cp.MOSEK)
 
 	return x, prob
 

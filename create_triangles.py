@@ -19,7 +19,7 @@ posThreshold2 = 1
 EDGES = [[True, True, True], [True, True, False], [True, False, True], \
 [False, True,  True], [True, False, False], [False, True, False],[False, False , True], [False, False, False]]
 
-target = 1.421
+target = 1.437
 pset = target / 2
 ppivot = 1 - pset
 alpha = target / (2 - target)
@@ -41,7 +41,7 @@ splittingPoints.append(posThreshold2)
 # splittingPoints = list(reduce(lambda x, y: x + y, Threshold))
 splittingPoints += [i / base for i in range(0, base + 1)]
 
-splittingPoints += [0.15, 0.62, 0.63, 0.64, 0.65]
+splittingPoints += [0.15, 0.62, 0.65]
 # splittingPoints += [0.05, 0.95, 0.51, 0.49, 0.99]/
 splittingPoints += [i / 100 for i in range(32, 60, 2)]
 splittingPoints += [i / 100 for i in range(42, 54, 1)]
@@ -358,8 +358,8 @@ def createtriangles(xRange, yRange, zRange, index):
 				for p in [max(0, 1- (x + y +z)/2, 1- x - y), min(1 - x, 1 - y, 1-z)]:
 					for i in range(len(EDGES)):
 						temp = ratio(x, y, z, p, xRange, yRange, zRange, EDGES[i])
-						if f[i] < temp:
-							print("entry: ", x, y, z, p, xRange[0], yRange[0], zRange[0], EDGES[i], temp)
+						# if f[i] < temp:
+						# 	print("entry: ", x, y, z, p, xRange[0], yRange[0], zRange[0], EDGES[i], temp)
 						f[i] = max(temp, f[i])
 						
 
@@ -527,10 +527,10 @@ if __name__ == '__main__':
 
 	print(splittingPoints, len(splittingPoints))
 	index = []
-	# index = construct_triangles()
+	index = construct_triangles()
 	# # createtriangles([0, 1.0],[0.31, 0.40], [0.31, 0.40], index)
-	createtriangles([0.50, 0.50],[0.50, 0.50], [0.50, 0.50], index)
-	createtriangles([0.50, 0.50],[0.50, 0.50], [1.00, 1.00], index)
+	# createtriangles([0.50, 0.50],[0.50, 0.50], [0.50, 0.50], index)
+	# createtriangles([0.50, 0.50],[0.50, 0.50], [1.00, 1.00], index)
 	# createtriangles([0.49, 0.50],[0.49, 0.50], [0.49, 0.50], index)
 	# createtriangles([0.49, 0.50],[0.49, 0.50], [0.99, 1.00], index)
 	# createtriangles1([0.472, 0.473],[0.527, 0.528], [0.995, 0.996], index)
@@ -559,7 +559,7 @@ if __name__ == '__main__':
 	# createtriangles([0.41, 0.42],[0.58, 0.60], [0.99, 1.0], index)
 	# createtriangles([0.41, 0.42],[0.41, 0.42], [0.41, 0.42], index)
 	# createtriangles([0.65, 0.70],[0.65, 0.70], [0.99, 1.00], index)
-	print(index)
+	# print(index)
 
 	with open('triangles.csv', 'w', newline='') as f:
 	    # using csv.writer method from CSV package
