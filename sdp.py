@@ -2,7 +2,7 @@ import cvxpy as cp
 import numpy as np
 import csv
 from collections import defaultdict
-from create_triangles import *
+from create_triangles2 import *
 
 def solve_sdp(triangles):
 	# n = 1002
@@ -49,9 +49,9 @@ def solve_sdp(triangles):
 		C[idz, idx][i] +=  covxz
 		C[idy, idz][i] +=  covyz
 		C[idz, idy][i] +=  covyz
-		# C[idx, idx][i] +=  2 * covxx / (n - 2)
-		# C[idy, idy][i] +=  2 * covyy / (n - 2)
-		# C[idz, idz][i] +=  2 * covzz / (n - 2)
+		C[idx, idx][i] +=  2 * covxx / (n - 2)
+		C[idy, idy][i] +=  2 * covyy / (n - 2)
+		C[idz, idz][i] +=  2 * covzz / (n - 2)
 		# C[idz, idz].append((i, (tz - tz*tz)/n))
 
 	# print(C[5,5])
