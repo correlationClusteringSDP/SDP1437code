@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Output files
+output/
+*.csv
+*.txt
+last.csv
+triangles*.csv
+output.txt
+
+# Server output
+*_server/slurm_output/
+*_server/output_triangles/
+*_server/log_files/
+*_server/*.csv
+*_server/*.txt
+
+# Configuration files (if sensitive)
+*.lic
+mosek.lic
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+
+# Project specific
+server_config.txt
+pure_cluster_lp_server_config.txt
+*_server/range_combinations.txt
+*_server/splitting_points.txt
+*_server/edges_index.txt
+

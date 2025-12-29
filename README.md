@@ -7,41 +7,74 @@ This project contains code to verify paper results for correlation clustering us
 The repository contains implementations to check two different LP formulations:
 
 1. **Pure Cluster LP** (`pure_cluster_lp/`): Standard correlation clustering LP formulation
-2. **Stronger LP with 3-Strong-Adjacency** (`cluster_lp_3_SA/`): Enhanced LP formulation with additional constraints
+2. **Extended LP with 3-Strong-Adjacency** (`pure_cluster_lp_extended_3_SA/`): Enhanced LP formulation with additional constraints and p-value adjustments
 
 ## Installation
 
-Install the required Python package:
+### Local Installation
+
+For local execution, install dependencies using pip:
 
 ```bash
-pip install cvxpy
+pip install -r requirements.txt
 ```
 
-**Note**: If you have access to the [Mosek solver](https://www.mosek.com/), it is recommended for faster computation.
+Or install individually:
+```bash
+pip install numpy scipy cvxpy
+```
+
+**Note**: If you have access to the [Mosek solver](https://www.mosek.com/), it is recommended for faster computation. See [docs/SETUP_ENVIRONMENT.md](docs/SETUP_ENVIRONMENT.md) for detailed installation instructions.
+
+### Server/Cluster Installation
+
+For server/cluster execution, see [docs/SERVER_GUIDE.md](docs/SERVER_GUIDE.md) for complete instructions on environment setup and running jobs.
 
 ## Project Structure
 
-### pure_cluster_lp/
-Contains files for the pure cluster LP formulation:
-- `create_triangles.py`: Generates triangle constraints
-- `sdp.py`: Solves the SDP and checks the approximation ratio
-- `triangles.csv`: Generated triangle data
-- `output.txt`: Results
+```
+SDP1437code/
+├── pure_cluster_lp/                    # Pure cluster LP implementation
+│   ├── create_triangles.py            # Generate triangle constraints
+│   ├── sdp.py                         # Solve SDP and check approximation ratio
+│   └── check_ratio.py                 # Check ratio for specific ranges
+│
+├── pure_cluster_lp_extended_3_SA/      # Extended 3-SA LP implementation
+│   ├── create_triangles.py            # Generate triangles with p-value adjustments
+│   ├── sdp.py                         # Solve SDP
+│   ├── check_ratio.py                 # Check ratio utilities
+│   └── debug_negative_ratio.py        # Debugging tools
+│
+├── pure_cluster_lp_server/             # Server scripts for pure cluster LP
+│   ├── run_create_triangles_server.py
+│   └── submit_slurm_*.sh
+│
+├── pure_cluster_lp_extended_3_SA_server/  # Server scripts for extended 3-SA
+│   ├── run_create_triangles_server.py
+│   └── submit_slurm_*.sh
+│
+├── docs/                                # Documentation
+│   └── SERVER_GUIDE.md                 # Complete server setup and execution guide
+│
+├── utils/                              # Utility scripts
+│   ├── test_solvers.py                 # Test CVXPY and MOSEK installation
+│   └── check_ratio_mixed_rounding.py   # Mixed rounding ratio checker
+│
+├── requirements.txt                    # Python dependencies for local execution
+└── requirements-server.txt             # Python dependencies for server/cluster
+```
 
-### cluster_lp_3_SA/
-Contains files for the stronger LP with 3-Strong-Adjacency constraints. This folder includes **two different implementations**:
+### Key Differences
 
-#### Implementation 1: Interval-based (Multiple Occurrences)
-- `create_triangles_interval.py`: Generates triangles using interval identification
-- `sdp_interval.py`: Solves the LP using interval method
-- **Note**: Each triangle may appear up to 8 times in this implementation
+**Pure Cluster LP** (`pure_cluster_lp/`):
+- Standard correlation clustering LP formulation
+- Does not adjust p-values based on `1 - (x+y+z)/2` constraint
+- Uses original pl and pu values directly
 
-#### Implementation 2: Unique Triangles (Recommended)
-- `create_triangles_with_3SA.py`: Generates triangles where each appears exactly once
-- `sdp_with_3SA.py`: Solves the LP with unique triangle representation
-- `compute_triangle_ratio.py`: Additional ratio computation utilities
-- `check_ratio_test.py`: Test ratio verification
-- **Note**: Each triangle appears only once, more efficient
+**Extended 3-SA LP** (`pure_cluster_lp_extended_3_SA/`):
+- Enhanced LP formulation with p-value adjustments
+- Adjusts pl and pu to respect `p_min = 1 - (x+y+z)/2` constraint
+- Recalculates ratios for boundary triangles
 
 ## Usage
 
@@ -58,21 +91,17 @@ python create_triangles.py
 python sdp.py
 ```
 
-### For Stronger LP (Interval-based):
+### For Extended 3-SA LP:
 
 ```bash
-cd cluster_lp_3_SA
-python create_triangles_interval.py
-python sdp_interval.py
+cd pure_cluster_lp_extended_3_SA
+python create_triangles.py
+python sdp.py triangles_merged.csv .
 ```
 
-### For Stronger LP (Unique triangles):
+### Server Execution (SLURM):
 
-```bash
-cd cluster_lp_3_SA
-python create_triangles_with_3SA.py
-python sdp_with_3SA.py
-```
+See [docs/SERVER_GUIDE.md](docs/SERVER_GUIDE.md) for complete instructions on environment setup and running jobs on a cluster.
 
 ## Parameters
 
@@ -85,9 +114,23 @@ The `sdp.py` files check `-OPT_{SDP}`, which should be nearly 0 for valid soluti
 
 ## Notes
 
-- Each implementation uses different methods to identify and count triangles
-- The interval-based method may have redundancy (triangles appearing up to 8 times)
-- The unique triangle method is generally more efficient, at the cost of the approximate ratio
+- **Pure Cluster LP**: Uses range-based indexing for triangles, allowing the same (x,y,z) values in different ranges to have different IDs
+- **Extended 3-SA LP**: Includes p-value adjustments to ensure `p >= 1 - (x+y+z)/2` for better ratio calculations
+- Both implementations support parallel execution on SLURM clusters
 - Results are saved in respective `output.txt` files
+- Generated triangle files (CSV) are gitignored to keep the repository clean
+
+## Requirements
+
+- Python 3.x
+- NumPy >= 1.20.0
+- SciPy >= 1.7.0
+- CVXPY >= 1.2.0
+- SCS solver (open-source, included with CVXPY)
+- MOSEK (optional, but recommended for faster solving)
+
+See `requirements.txt` for local installation or `requirements-server.txt` for server/cluster installation.
+
+For detailed installation instructions, especially for server/cluster environments, see [docs/SERVER_GUIDE.md](docs/SERVER_GUIDE.md).
 
 
