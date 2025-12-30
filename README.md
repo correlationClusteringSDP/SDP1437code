@@ -24,7 +24,7 @@ Or install individually:
 pip install numpy scipy cvxpy
 ```
 
-**Note**: If you have access to the [Mosek solver](https://www.mosek.com/), it is recommended for faster computation. See [docs/SETUP_ENVIRONMENT.md](docs/SETUP_ENVIRONMENT.md) for detailed installation instructions.
+**Note**: If you have access to the [Mosek solver](https://www.mosek.com/), it is recommended for faster computation. See [docs/SERVER_GUIDE.md](docs/SERVER_GUIDE.md) for detailed installation instructions.
 
 ### Server/Cluster Installation
 
@@ -87,16 +87,30 @@ SDP1437code/
 
 ```bash
 cd pure_cluster_lp
-python create_triangles.py
-python sdp.py
+
+# Option 1: Generate triangles_merged.csv locally
+python create_triangles.py  # Generates triangles_merged.csv
+
+# Option 2: Download pre-generated file from Google Drive
+# See "Data Files" section below for download link
+
+# Run SDP solver
+python sdp.py  # Uses triangles_merged.csv by default
 ```
 
 ### For Extended 3-SA LP:
 
 ```bash
 cd pure_cluster_lp_extended_3_SA
-python create_triangles.py
-python sdp.py triangles_merged.csv .
+
+# Option 1: Generate triangles_merged.csv locally
+python create_triangles.py  # Generates triangles_merged.csv
+
+# Option 2: Download pre-generated file from Google Drive
+# See "Data Files" section below for download link
+
+# Run SDP solver
+python sdp.py  # Uses triangles_merged.csv by default
 ```
 
 ### Server Execution (SLURM):
@@ -105,12 +119,55 @@ See [docs/SERVER_GUIDE.md](docs/SERVER_GUIDE.md) for complete instructions on en
 
 ## Parameters
 
-- **target**: The approximation ratio you want to achieve
-- **splitting point**: Splits the interval (for interval-based method)
+You can customize the following parameters in `create_triangles.py`:
+
+### Key Parameters
+
+- **`target`**: The approximation ratio you want to achieve
+  - `pure_cluster_lp/create_triangles.py`: Default is `1.484`
+  - `pure_cluster_lp_extended_3_SA/create_triangles.py`: Default is `1.437`
+  - Located at the top of the file (line ~22)
+
+- **`splittingPoints`**: List of values that define the ranges for triangle generation
+  - Controls the granularity of the search space
+  - More splitting points = finer granularity but more computation
+  - Located at the top of the file (line ~38)
+  - Example: `[0.0, 0.05, 0.1, 0.2, 0.3, ..., 1.0]`
+
+- **`posThreshold1` and `posThreshold2`**: Threshold values for the probability function
+  - `pure_cluster_lp/create_triangles.py`: `posThreshold1 = 0.40`, `posThreshold2 = 0.57`
+  - `pure_cluster_lp_extended_3_SA/create_triangles.py`: `posThreshold1 = 0.33`, `posThreshold2 = 1.1`
+  - Located at the top of the file (line ~14-15)
+
+- **`base`**: Base value for discretization (default: `20`)
+  - Controls the resolution of the search
+
+### How to Modify
+
+1. Open the appropriate `create_triangles.py` file:
+   - `pure_cluster_lp/create_triangles.py` for Pure Cluster LP
+   - `pure_cluster_lp_extended_3_SA/create_triangles.py` for Extended 3-SA LP
+
+2. Modify the parameters at the top of the file (in the "Algorithm parameter" section)
+
+3. Regenerate triangles by running `create_triangles.py`
+
+**Note**: Changing these parameters will affect the generated triangles and may require regenerating `triangles_merged.csv`.
 
 ## Verification
 
 The `sdp.py` files check `-OPT_{SDP}`, which should be nearly 0 for valid solutions.
+
+## Data Files
+
+The generated `triangles_merged.csv` files are large (~35MB each) and are not included in this repository. You can:
+
+1. **Generate them locally**: Run `create_triangles.py` in the respective directories
+2. **Download pre-generated files**: Available on [Google Drive](https://drive.google.com/drive/folders/1iW3r3z1ntlhA_-rD9I2jyDwq6ddenrBp?usp=drive_link)
+   - `pure_cluster_lp/triangles_merged.csv`
+   - `pure_cluster_lp_extended_3_SA/triangles_merged.csv`
+
+After downloading, place the files in their respective directories before running `sdp.py`.
 
 ## Notes
 

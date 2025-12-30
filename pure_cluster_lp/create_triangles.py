@@ -486,7 +486,7 @@ if __name__ == '__main__':
 	print("all triangles:", len(index))
 	print("after filter:", len(trianlges))
 
-	with open('pure_cluster_lp/triangles.csv', 'w', newline='') as f:
+	with open('triangles_merged.csv', 'w', newline='') as f:
 	    # using csv.writer method from CSV package
 		write = csv.writer(f)
 		write.writerows(trianlges)

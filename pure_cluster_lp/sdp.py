@@ -142,8 +142,10 @@ def solve_sdp(triangles):
 
 if __name__ == '__main__':
 	# Parse command line arguments
-	triangles_file = sys.argv[1] if len(sys.argv) > 1 else "pure_cluster_lp_extended_3_SA/triangles_merged.csv"
-	output_dir = sys.argv[2] if len(sys.argv) > 2 else "pure_cluster_lp_extended_3_SA"
+	# Default values assume running from the subdirectory (local execution)
+	# Server execution always passes explicit paths
+	triangles_file = sys.argv[1] if len(sys.argv) > 1 else "triangles_merged.csv"
+	output_dir = sys.argv[2] if len(sys.argv) > 2 else "."
 	
 	# Ensure output directory exists
 	os.makedirs(output_dir, exist_ok=True)
