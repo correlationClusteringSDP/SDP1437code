@@ -7,7 +7,7 @@ This project contains code to verify paper results for correlation clustering us
 The repository contains implementations to check two different LP formulations:
 
 1. **Pure Cluster LP** (`pure_cluster_lp/`): Standard correlation clustering LP formulation
-2. **Extended LP with 3-Strong-Adjacency** (`pure_cluster_lp_extended_3_SA/`): Enhanced LP formulation with additional constraints and p-value adjustments
+2. **Extended LP with 3-Sherali-Adams** (`pure_cluster_lp_extended_3_SA/`): Enhanced LP formulation with additional constraints and p-value adjustments
 
 ## Installation
 
@@ -39,7 +39,7 @@ SDP1437code/
 │   ├── sdp.py                         # Solve SDP and check approximation ratio
 │   └── check_ratio.py                 # Check ratio for specific ranges
 │
-├── pure_cluster_lp_extended_3_SA/      # Extended 3-SA LP implementation
+├── pure_cluster_lp_extended_3_SA/      # Extended 3-Sherali-Adams LP implementation
 │   ├── create_triangles.py            # Generate triangles with p-value adjustments
 │   ├── sdp.py                         # Solve SDP
 │   ├── check_ratio.py                 # Check ratio utilities
@@ -49,7 +49,7 @@ SDP1437code/
 │   ├── run_create_triangles_server.py
 │   └── submit_slurm_*.sh
 │
-├── pure_cluster_lp_extended_3_SA_server/  # Server scripts for extended 3-SA
+├── pure_cluster_lp_extended_3_SA_server/  # Server scripts for extended 3-Sherali-Adams
 │   ├── run_create_triangles_server.py
 │   └── submit_slurm_*.sh
 │
@@ -71,10 +71,11 @@ SDP1437code/
 - Does not adjust p-values based on `1 - (x+y+z)/2` constraint
 - Uses original pl and pu values directly
 
-**Extended 3-SA LP** (`pure_cluster_lp_extended_3_SA/`):
+**Extended 3-Sherali-Adams LP** (`pure_cluster_lp_extended_3_SA/`):
 - Enhanced LP formulation with p-value adjustments
 - Adjusts pl and pu to respect `p_min = 1 - (x+y+z)/2` constraint
 - Recalculates ratios for boundary triangles
+- Note: "3-SA" stands for "3-Sherali-Adams"
 
 ## Usage
 
@@ -98,7 +99,7 @@ python create_triangles.py  # Generates triangles_merged.csv
 python sdp.py  # Uses triangles_merged.csv by default
 ```
 
-### For Extended 3-SA LP:
+### For Extended 3-Sherali-Adams LP:
 
 ```bash
 cd pure_cluster_lp_extended_3_SA
@@ -134,7 +135,7 @@ You can customize the following parameters in `create_triangles.py`:
   - Located at the top of the file (line ~38)
   - Example: `[0.0, 0.05, 0.1, 0.2, 0.3, ..., 1.0]`
 
-- **`posThreshold1` and `posThreshold2`**: Threshold values for the probability function
+- **`posThreshold1` and `posThreshold2`**: Threshold values for the rounding function
   - `pure_cluster_lp/create_triangles.py`: `posThreshold1 = 0.40`, `posThreshold2 = 0.57`
   - `pure_cluster_lp_extended_3_SA/create_triangles.py`: `posThreshold1 = 0.33`, `posThreshold2 = 1.1`
   - Located at the top of the file (line ~14-15)
@@ -146,7 +147,7 @@ You can customize the following parameters in `create_triangles.py`:
 
 1. Open the appropriate `create_triangles.py` file:
    - `pure_cluster_lp/create_triangles.py` for Pure Cluster LP
-   - `pure_cluster_lp_extended_3_SA/create_triangles.py` for Extended 3-SA LP
+   - `pure_cluster_lp_extended_3_SA/create_triangles.py` for Extended 3-Sherali-Adams LP
 
 2. Modify the parameters at the top of the file (in the "Algorithm parameter" section)
 
@@ -172,7 +173,7 @@ After downloading, place the files in their respective directories before runnin
 ## Notes
 
 - **Pure Cluster LP**: Uses range-based indexing for triangles, allowing the same (x,y,z) values in different ranges to have different IDs
-- **Extended 3-SA LP**: Includes p-value adjustments to ensure `p >= 1 - (x+y+z)/2` for better ratio calculations
+- **Extended 3-Sherali-Adams LP**: Includes p-value adjustments to ensure `p >= 1 - (x+y+z)/2` for better ratio calculations
 - Both implementations support parallel execution on SLURM clusters
 - Results are saved in respective `output.txt` files
 - Generated triangle files (CSV) are gitignored to keep the repository clean
