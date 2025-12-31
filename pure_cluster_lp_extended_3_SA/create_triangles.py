@@ -12,7 +12,7 @@ from functools import reduce
 ##############################
 
 posThreshold1 = 0.33
-posThreshold2 = 1.1
+posThreshold2 = 0.8
 # negThreshold1 = -1
 # negThreshold2 = -1
 
